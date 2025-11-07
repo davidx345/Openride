@@ -15,8 +15,8 @@ import type { RegisterData } from "@/src/types"
 
 export default function RegisterPage() {
   const router = useRouter()
-  const { register: registerUser, isLoading } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
@@ -32,15 +32,41 @@ export default function RegisterPage() {
   const selectedRole = watch("role")
 
   const onSubmit = async (data: RegisterData) => {
+    setIsLoading(true)
     try {
-      await registerUser(data)
+      // DEMO MODE: Accept any registration and redirect instantly
+      const role = data.role === "DRIVER" ? "driver" : "rider"
+      
+      // Create mock user
+      const mockUser = {
+        id: Math.random().toString(36).substr(2, 9),
+        email: data.email,
+        name: data.name,
+        role: data.role,
+        phone: data.phone || "+234 800 000 0000",
+        createdAt: new Date().toISOString(),
+      }
+      
+      // Save to localStorage
+      localStorage.setItem("openride-auth", JSON.stringify({
+        state: {
+          user: mockUser,
+          token: "demo-token-" + Math.random().toString(36).substr(2, 9),
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        },
+        version: 0,
+      }))
+      
       toast.success("Account created successfully!")
       
       setTimeout(() => {
-        router.push(data.role === "DRIVER" ? "/driver" : "/rider")
+        router.push(`/${role}`)
       }, 500)
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Registration failed. Please try again.")
+      toast.error("An error occurred")
+      setIsLoading(false)
     }
   }
 

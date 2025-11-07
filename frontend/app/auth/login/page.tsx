@@ -15,8 +15,8 @@ import type { LoginCredentials } from "@/src/types"
 
 export default function LoginPage() {
   const router = useRouter()
-  const { login, isLoading } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
@@ -25,17 +25,41 @@ export default function LoginPage() {
   } = useForm<LoginCredentials>()
 
   const onSubmit = async (data: LoginCredentials) => {
+    setIsLoading(true)
     try {
-      await login(data)
+      // DEMO MODE: Accept any email/password and redirect instantly
+      const role = data.email.toLowerCase().includes("driver") ? "driver" : "rider"
+      
+      // Create mock user
+      const mockUser = {
+        id: Math.random().toString(36).substr(2, 9),
+        email: data.email,
+        name: data.email.split("@")[0],
+        role: role.toUpperCase(),
+        phone: "+234 800 000 0000",
+        createdAt: new Date().toISOString(),
+      }
+      
+      // Save to localStorage
+      localStorage.setItem("openride-auth", JSON.stringify({
+        state: {
+          user: mockUser,
+          token: "demo-token-" + Math.random().toString(36).substr(2, 9),
+          isAuthenticated: true,
+          isLoading: false,
+          error: null,
+        },
+        version: 0,
+      }))
+      
       toast.success("Welcome back! Logging you in...")
       
-      // Redirect based on role (you'll need to get this from the user object after login)
-      // For now, defaulting to rider
       setTimeout(() => {
-        router.push("/rider")
+        router.push(`/${role}`)
       }, 500)
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Login failed. Please try again.")
+      toast.error("An error occurred")
+      setIsLoading(false)
     }
   }
 
