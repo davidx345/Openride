@@ -8,6 +8,7 @@ import RouteCreationForm from "@/components/driver/route-creation-form"
 import ActiveRoutesList from "@/components/driver/active-routes-list"
 import EarningsDashboard from "@/components/driver/earnings-dashboard"
 import DriverProfile from "@/components/driver/driver-profile"
+import PriceCalculator from "@/components/driver/price-calculator"
 import { Plus } from "lucide-react"
 
 export default function DriverDashboard() {
@@ -92,7 +93,14 @@ export default function DriverDashboard() {
 
               {/* Earnings Tab */}
               <TabsContent value="earnings" className="space-y-6">
-                <EarningsDashboard routes={routes} />
+                <div className="grid lg:grid-cols-2 gap-6">
+                  <div>
+                    <EarningsDashboard routes={routes} />
+                  </div>
+                  <div>
+                    <PriceCalculator />
+                  </div>
+                </div>
               </TabsContent>
 
               {/* Profile Tab */}

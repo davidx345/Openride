@@ -3,11 +3,57 @@
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Clock, MapPin, Phone, AlertCircle, CheckCircle, Compass } from "lucide-react"
-import { useState } from "react"
+import { Clock, MapPin, Phone, AlertCircle, CheckCircle, Compass, QrCode } from "lucide-react"
+import { useState, useEffect } from "react"
+import { QRCodeSVG } from "qrcode.react"
+
+// Countdown Timer Component
+function CountdownTimer({ targetTime }: { targetTime: string }) {
+  const [timeLeft, setTimeLeft] = useState("")
+
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      // Parse target time (e.g., "7:00 AM")
+      const now = new Date()
+      const [time, period] = targetTime.split(" ")
+      const [hours, minutes] = time.split(":").map(Number)
+      
+      const target = new Date()
+      let targetHours = hours
+      if (period === "PM" && hours !== 12) targetHours += 12
+      if (period === "AM" && hours === 12) targetHours = 0
+      
+      target.setHours(targetHours, minutes, 0, 0)
+      
+      // If target time has passed today, set it for tomorrow
+      if (target < now) {
+        target.setDate(target.getDate() + 1)
+      }
+      
+      const diff = target.getTime() - now.getTime()
+      const hoursLeft = Math.floor(diff / (1000 * 60 * 60))
+      const minutesLeft = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+      
+      setTimeLeft(`${hoursLeft}h ${minutesLeft}m`)
+    }
+
+    calculateTimeLeft()
+    const interval = setInterval(calculateTimeLeft, 60000) // Update every minute
+    
+    return () => clearInterval(interval)
+  }, [targetTime])
+
+  return (
+    <div className="flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full text-primary">
+      <Clock className="w-3 h-3" />
+      <span className="text-xs font-semibold">{timeLeft} until departure</span>
+    </div>
+  )
+}
 
 export default function MyBookings({ bookings }: any) {
   const [expandedBooking, setExpandedBooking] = useState<string | null>(null)
+  const [showQR, setShowQR] = useState<string | null>(null)
 
   if (bookings.length === 0) {
     return (
@@ -26,12 +72,39 @@ export default function MyBookings({ bookings }: any) {
         <h2 className="text-xl font-bold mb-4">Upcoming Trips</h2>
         <div className="space-y-4">
           {bookings
-            .filter((b) => b.status === "Confirmed")
-            .map((booking) => (
-              <Card key={booking.id} className="p-6 border border-border">
+            .filter((b: any) => b.status === "Confirmed")
+            .map((booking: any) => (
+              <Card key={booking.id} className="p-6 border border-border relative overflow-hidden">
+                {/* QR Code Modal */}
+                {showQR === booking.id && (
+                  <div className="absolute inset-0 bg-background/95 backdrop-blur-sm z-10 flex items-center justify-center p-6">
+                    <div className="text-center">
+                      <h3 className="font-bold text-lg mb-4">Your Ticket QR Code</h3>
+                      <div className="bg-white p-6 rounded-lg inline-block mb-4">
+                        <QRCodeSVG
+                          value={JSON.stringify({
+                            bookingId: booking.id,
+                            from: booking.from,
+                            to: booking.to,
+                            timestamp: Date.now(),
+                          })}
+                          size={220}
+                          level="H"
+                        />
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Show this code to your driver at pickup
+                      </p>
+                      <Button onClick={() => setShowQR(null)} variant="outline">
+                        Close
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <h3 className="text-lg font-bold">
                         {booking.from} → {booking.to}
                       </h3>
@@ -39,6 +112,7 @@ export default function MyBookings({ bookings }: any) {
                         <CheckCircle className="w-3 h-3" />
                         Confirmed
                       </Badge>
+                      <CountdownTimer targetTime={booking.departureTime} />
                     </div>
                     <p className="text-sm text-muted-foreground">with {booking.driverName}</p>
                   </div>
@@ -71,15 +145,22 @@ export default function MyBookings({ bookings }: any) {
                 <div className="flex gap-3">
                   <Button
                     variant="outline"
-                    className="flex-1 gap-2 bg-transparent"
+                    className="flex-1 gap-2 bg-primary text-white hover:bg-primary/90 border-primary"
+                    onClick={() => setShowQR(booking.id)}
+                  >
+                    <QrCode className="w-4 h-4" />
+                    Show QR Code
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="gap-2"
                     onClick={() => setExpandedBooking(expandedBooking === booking.id ? null : booking.id)}
                   >
                     <Compass className="w-4 h-4" />
-                    View Details
+                    Details
                   </Button>
-                  <Button variant="outline" className="flex-1 gap-2 bg-transparent">
+                  <Button variant="outline" className="gap-2">
                     <Phone className="w-4 h-4" />
-                    Contact Driver
                   </Button>
                 </div>
 
@@ -106,13 +187,13 @@ export default function MyBookings({ bookings }: any) {
       </div>
 
       {/* Past Trips */}
-      {bookings.filter((b) => b.status !== "Confirmed").length > 0 && (
+      {bookings.filter((b: any) => b.status !== "Confirmed").length > 0 && (
         <div>
           <h2 className="text-xl font-bold mb-4 mt-8">Past Trips</h2>
           <div className="space-y-2">
             {bookings
-              .filter((b) => b.status !== "Confirmed")
-              .map((booking) => (
+              .filter((b: any) => b.status !== "Confirmed")
+              .map((booking: any) => (
                 <Card key={booking.id} className="p-4 border border-border opacity-75">
                   <div className="flex items-center justify-between">
                     <div>

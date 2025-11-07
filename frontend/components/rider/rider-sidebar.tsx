@@ -32,11 +32,11 @@ export default function RiderSidebar({ activeTab, setActiveTab }: any) {
       >
         <div className="p-6 space-y-8">
           {/* Logo */}
-          <div className="flex items-center gap-2 cursor-pointer mb-8" onClick={() => router.push("/")}>
+          <div className="flex items-center gap-2 cursor-pointer mb-8" onClick={() => router.push("/landing")}>
             <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">OS</span>
+              <span className="text-white font-bold">OR</span>
             </div>
-            <span className="font-bold text-lg">OpenSeat</span>
+            <span className="font-bold text-lg">OpenRide</span>
           </div>
 
           {/* Navigation */}
@@ -72,7 +72,7 @@ export default function RiderSidebar({ activeTab, setActiveTab }: any) {
               variant="outline"
               size="sm"
               className="w-full gap-2 bg-transparent"
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/landing")}
             >
               <LogOut className="w-4 h-4" />
               Logout

@@ -2,13 +2,13 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { ChevronDown, Search } from "lucide-react"
-
-const locations = ["Ogba", "Ikeja", "Lekki", "VI", "Surulere", "Festac", "Marina", "Yaba"]
+import { Input } from "@/components/ui/input"
+import { ChevronDown, Search, MapPin } from "lucide-react"
+import { NIGERIAN_CITIES } from "@/src/types"
 
 export default function SearchForm({ onSearch }: any) {
   const [formData, setFormData] = useState({
@@ -17,8 +17,36 @@ export default function SearchForm({ onSearch }: any) {
     timeRange: "06:00-08:00",
   })
 
+  const [fromSearch, setFromSearch] = useState("")
+  const [toSearch, setToSearch] = useState("")
   const [fromOpen, setFromOpen] = useState(false)
   const [toOpen, setToOpen] = useState(false)
+  
+  const fromRef = useRef<HTMLDivElement>(null)
+  const toRef = useRef<HTMLDivElement>(null)
+
+  // Filter cities based on search input
+  const filteredFromCities = NIGERIAN_CITIES.filter((city) =>
+    city.toLowerCase().includes(fromSearch.toLowerCase())
+  )
+  const filteredToCities = NIGERIAN_CITIES.filter((city) =>
+    city.toLowerCase().includes(toSearch.toLowerCase())
+  )
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (fromRef.current && !fromRef.current.contains(event.target as Node)) {
+        setFromOpen(false)
+      }
+      if (toRef.current && !toRef.current.contains(event.target as Node)) {
+        setToOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,64 +60,92 @@ export default function SearchForm({ onSearch }: any) {
       <form onSubmit={handleSearch} className="space-y-4">
         <div className="grid md:grid-cols-3 gap-4">
           {/* From Location */}
-          <div className="space-y-2">
+          <div className="space-y-2" ref={fromRef}>
             <Label htmlFor="from">From</Label>
             <div className="relative">
-              <button
-                type="button"
-                onClick={() => setFromOpen(!fromOpen)}
-                className="w-full px-4 py-2 border border-border rounded-lg flex justify-between items-center bg-background hover:bg-muted transition-colors text-left"
-              >
-                <span>{formData.from || "Select location"}</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
+              <Input
+                type="text"
+                placeholder="Search location..."
+                value={formData.from || fromSearch}
+                onChange={(e) => {
+                  setFromSearch(e.target.value)
+                  setFormData((prev) => ({ ...prev, from: "" }))
+                  setFromOpen(true)
+                }}
+                onFocus={() => setFromOpen(true)}
+                className="pl-10"
+              />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              
               {fromOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-10">
-                  {locations.map((loc) => (
-                    <button
-                      key={loc}
-                      type="button"
-                      onClick={() => {
-                        setFormData((prev) => ({ ...prev, from: loc }))
-                        setFromOpen(false)
-                      }}
-                      className="w-full px-4 py-2 hover:bg-muted text-left transition-colors text-sm"
-                    >
-                      {loc}
-                    </button>
-                  ))}
+                <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                  {filteredFromCities.length > 0 ? (
+                    filteredFromCities.map((city) => (
+                      <button
+                        key={city}
+                        type="button"
+                        onClick={() => {
+                          setFormData((prev) => ({ ...prev, from: city }))
+                          setFromSearch("")
+                          setFromOpen(false)
+                        }}
+                        className="w-full px-4 py-2 hover:bg-muted text-left transition-colors text-sm flex items-center gap-2"
+                      >
+                        <MapPin className="w-3 h-3 text-primary" />
+                        {city}
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-4 py-2 text-sm text-muted-foreground">
+                      No locations found
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           </div>
 
           {/* To Location */}
-          <div className="space-y-2">
+          <div className="space-y-2" ref={toRef}>
             <Label htmlFor="to">To</Label>
             <div className="relative">
-              <button
-                type="button"
-                onClick={() => setToOpen(!toOpen)}
-                className="w-full px-4 py-2 border border-border rounded-lg flex justify-between items-center bg-background hover:bg-muted transition-colors text-left"
-              >
-                <span>{formData.to || "Select location"}</span>
-                <ChevronDown className="w-4 h-4" />
-              </button>
+              <Input
+                type="text"
+                placeholder="Search location..."
+                value={formData.to || toSearch}
+                onChange={(e) => {
+                  setToSearch(e.target.value)
+                  setFormData((prev) => ({ ...prev, to: "" }))
+                  setToOpen(true)
+                }}
+                onFocus={() => setToOpen(true)}
+                className="pl-10"
+              />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              
               {toOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-10">
-                  {locations.map((loc) => (
-                    <button
-                      key={loc}
-                      type="button"
-                      onClick={() => {
-                        setFormData((prev) => ({ ...prev, to: loc }))
-                        setToOpen(false)
-                      }}
-                      className="w-full px-4 py-2 hover:bg-muted text-left transition-colors text-sm"
-                    >
-                      {loc}
-                    </button>
-                  ))}
+                <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                  {filteredToCities.length > 0 ? (
+                    filteredToCities.map((city) => (
+                      <button
+                        key={city}
+                        type="button"
+                        onClick={() => {
+                          setFormData((prev) => ({ ...prev, to: city }))
+                          setToSearch("")
+                          setToOpen(false)
+                        }}
+                        className="w-full px-4 py-2 hover:bg-muted text-left transition-colors text-sm flex items-center gap-2"
+                      >
+                        <MapPin className="w-3 h-3 text-primary" />
+                        {city}
+                      </button>
+                    ))
+                  ) : (
+                    <div className="px-4 py-2 text-sm text-muted-foreground">
+                      No locations found
+                    </div>
+                  )}
                 </div>
               )}
             </div>

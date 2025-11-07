@@ -15,10 +15,10 @@ export default function Navbar() {
         {/* Logo */}
         <div
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/landing")}
         >
           <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center animate-pulse-subtle">
-            <span className="text-white font-bold text-lg">OS</span>
+            <span className="text-white font-bold text-lg">OR</span>
           </div>
           <span className="font-bold text-xl hidden sm:inline">OpenRide</span>
         </div>
