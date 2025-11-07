@@ -24,15 +24,15 @@ export default function BookingModal({ route, onClose, onConfirm }: any) {
     // Generate demo payment params for Interswitch
     const txnRef = `OPENRIDE-${Date.now()}`
     const params = {
-      merchant_code: "MX6072", // Official test merchant code from Interswitch docs
-      pay_item_id: "9405967", // Official test pay item ID
+      merchant_code: "MX007", // From Interswitch inline checkout example
+      pay_item_id: "101007", // From Interswitch inline checkout example
       txn_ref: txnRef,
       amount: totalAmount * 100, // Convert to kobo (minor units)
       currency: 566, // NGN ISO code
       cust_name: user?.name || "Demo Rider",
       cust_email: user?.email || "rider@openride.demo",
       pay_item_name: `OpenRide: ${route.from} to ${route.to}`,
-      mode: "TEST", // TEST mode for demo
+      mode: "TEST", // TEST mode as per Interswitch docs
       site_redirect_url: window.location.origin + "/rider?payment=success",
     }
     
