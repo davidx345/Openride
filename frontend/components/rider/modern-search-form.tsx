@@ -14,7 +14,7 @@ interface SavedPlace {
 }
 
 interface ModernSearchFormProps {
-  onSearch: (from: string, to: string, time: string) => void
+  onSearch: (searchParams: { from: string; to: string; timeRange: string }) => void
 }
 
 export default function ModernSearchForm({ onSearch }: ModernSearchFormProps) {
@@ -44,7 +44,8 @@ export default function ModernSearchForm({ onSearch }: ModernSearchFormProps) {
       setRecentSearches(updated)
       localStorage.setItem("recent_searches", JSON.stringify(updated))
       
-      onSearch(from, to, timeRange)
+      // Call the parent onSearch with proper parameters
+      onSearch({ from, to, timeRange })
       setActiveInput(null)
     }
   }
