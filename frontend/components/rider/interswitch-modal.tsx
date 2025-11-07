@@ -50,9 +50,9 @@ export default function InterswitchModal({
 
   const testCard = {
     number: "5060 9905 8000 0217 499",
-    cvv: "123",
-    expiry: "12/26",
-    pin: "1234",
+    cvv: "111",
+    expiry: "03/50",
+    pin: "1111",
   }
 
   // Check if Interswitch script is loaded (loaded via layout.tsx)
@@ -87,22 +87,29 @@ export default function InterswitchModal({
 
     // Payment callback function
     const paymentCallback = (response: any) => {
-      console.log('🔔 Interswitch Payment Callback Triggered');
-      console.log('📦 Full Response Object:', response);
-      console.log('✅ Response Code:', response.resp);
-      console.log('📝 Response Description:', response.desc);
+      console.log('🔔 ========== INTERSWITCH PAYMENT CALLBACK ==========');
+      console.log('📦 Full Response Object:', JSON.stringify(response, null, 2));
+      console.log('✅ Response Code (resp):', response.resp);
+      console.log('📝 Response Description (desc):', response.desc);
+      console.log('📝 Response Code (ResponseCode):', response.ResponseCode);
+      console.log('📝 Response Description (ResponseDescription):', response.ResponseDescription);
+      console.log('🔍 All Response Keys:', Object.keys(response));
+      console.log('========================================');
 
       // Check response code - '00' means success
-      if (response.resp === '00') {
+      // Interswitch may return either 'resp' or 'ResponseCode'
+      const responseCode = response.resp || response.ResponseCode;
+      
+      if (responseCode === '00') {
         console.log('✅ Payment Successful!');
         // Payment successful
         setStep("success");
         
-        // Call backend to verify payment
+        // In demo mode, just proceed without backend verification
         setTimeout(() => {
           onSuccess(paymentParams.txn_ref);
         }, 2000);
-      } else if (response.resp === 'Z01') {
+      } else if (responseCode === 'Z01') {
         // User cancelled payment
         console.log('❌ Payment Cancelled by User');
         setStep("error");
@@ -112,15 +119,16 @@ export default function InterswitchModal({
         }
       } else {
         // Payment failed or other error
-        console.log('❌ Payment Failed:', response.desc);
+        const errorDesc = response.desc || response.ResponseDescription || 'Unknown error';
+        console.log('❌ Payment Failed. Response Code:', responseCode, 'Description:', errorDesc);
         setStep("error");
         setErrorMessage(
-          response.desc || 
+          errorDesc || 
           'Payment was not completed. Please try again.'
         );
         
         if (onError) {
-          onError(response.desc || 'Payment failed');
+          onError(errorDesc);
         }
       }
     };
