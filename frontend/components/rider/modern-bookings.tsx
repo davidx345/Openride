@@ -65,7 +65,7 @@ export default function ModernBookings() {
         color: "Black",
         plate: "ABC 123 XY",
       },
-      price: 2000,
+      price: 566,
       seats: 1,
       blockchain: {
         tokenId: "0x1a2b3c...",

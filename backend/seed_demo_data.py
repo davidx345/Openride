@@ -143,110 +143,143 @@ def create_test_vehicles(db, drivers):
     return vehicles
 
 def create_test_routes(db, drivers, vehicles):
-    """Create active routes for demonstration"""
+    """Create active routes for demonstration - All routes ₦566 for Interswitch test"""
     print("\n🛣️  Creating test routes...")
     
     tomorrow = datetime.now().date() + timedelta(days=1)
     
+    # Standard Interswitch test price: ₦566.00
+    TEST_PRICE = 566.00
+    
+    # Create comprehensive routes covering all major cities
+    # Each driver covers multiple routes to ensure all locations have matches
     routes = [
-        # Route 1: Popular mainland route
+        # ========== LAGOS ROUTES (Driver 1 - Demo Driver) ==========
         Route(
-            driver_id=drivers[0].id,
-            vehicle_id=vehicles[0].id,
-            start_location="Ikeja",
-            end_location="VI",
-            departure_date=tomorrow,
-            departure_time="08:00",
-            price_per_seat=1500.00,
-            available_seats=12,
-            total_seats=14,
-            status=RouteStatus.ACTIVE,
-            bus_stops=["Ikeja", "Oshodi", "Obalende", "VI"]
+            driver_id=drivers[0].id, vehicle_id=vehicles[0].id,
+            start_location="Ikeja", end_location="Victoria Island",
+            departure_date=tomorrow, departure_time="08:00",
+            price_per_seat=TEST_PRICE, available_seats=12, total_seats=14,
+            status=RouteStatus.ACTIVE, bus_stops=["Ikeja", "Oshodi", "Obalende", "Victoria Island"]
+        ),
+        Route(
+            driver_id=drivers[0].id, vehicle_id=vehicles[0].id,
+            start_location="Lekki", end_location="Marina",
+            departure_date=tomorrow, departure_time="09:00",
+            price_per_seat=TEST_PRICE, available_seats=10, total_seats=14,
+            status=RouteStatus.ACTIVE, bus_stops=["Lekki", "Ajah", "Ikoyi", "Marina"]
+        ),
+        Route(
+            driver_id=drivers[0].id, vehicle_id=vehicles[0].id,
+            start_location="Surulere", end_location="Yaba",
+            departure_date=tomorrow, departure_time="07:30",
+            price_per_seat=TEST_PRICE, available_seats=11, total_seats=14,
+            status=RouteStatus.ACTIVE, bus_stops=["Surulere", "Yaba"]
+        ),
+        Route(
+            driver_id=drivers[0].id, vehicle_id=vehicles[0].id,
+            start_location="Ajah", end_location="Oshodi",
+            departure_date=tomorrow, departure_time="10:00",
+            price_per_seat=TEST_PRICE, available_seats=13, total_seats=14,
+            status=RouteStatus.ACTIVE, bus_stops=["Ajah", "Lekki", "Obalende", "Oshodi"]
         ),
         
-        # Route 2: Island route
+        # ========== ABUJA ROUTES (Driver 2 - Mike Johnson) ==========
         Route(
-            driver_id=drivers[0].id,
-            vehicle_id=vehicles[0].id,
-            start_location="Lekki",
-            end_location="Marina",
-            departure_date=tomorrow,
-            departure_time="09:00",
-            price_per_seat=1200.00,
-            available_seats=10,
-            total_seats=14,
-            status=RouteStatus.ACTIVE,
-            bus_stops=["Lekki", "Ajah", "Ikoyi", "Marina"]
+            driver_id=drivers[1].id, vehicle_id=vehicles[1].id,
+            start_location="Abuja", end_location="Kubwa",
+            departure_date=tomorrow, departure_time="08:00",
+            price_per_seat=TEST_PRICE, available_seats=3, total_seats=4,
+            status=RouteStatus.ACTIVE, bus_stops=["Abuja", "Kubwa"]
+        ),
+        Route(
+            driver_id=drivers[1].id, vehicle_id=vehicles[1].id,
+            start_location="Wuse", end_location="Gwarinpa",
+            departure_date=tomorrow, departure_time="09:00",
+            price_per_seat=TEST_PRICE, available_seats=4, total_seats=4,
+            status=RouteStatus.ACTIVE, bus_stops=["Wuse", "Gwarinpa"]
+        ),
+        Route(
+            driver_id=drivers[1].id, vehicle_id=vehicles[1].id,
+            start_location="Maitama", end_location="Garki",
+            departure_date=tomorrow, departure_time="10:30",
+            price_per_seat=TEST_PRICE, available_seats=3, total_seats=4,
+            status=RouteStatus.ACTIVE, bus_stops=["Maitama", "Garki"]
         ),
         
-        # Route 3: Morning commute
+        # ========== PORT HARCOURT ROUTES (Driver 3 - Ada Okafor) ==========
         Route(
-            driver_id=drivers[1].id,
-            vehicle_id=vehicles[1].id,
-            start_location="Surulere",
-            end_location="Yaba",
-            departure_date=tomorrow,
-            departure_time="07:30",
-            price_per_seat=800.00,
-            available_seats=3,
-            total_seats=4,
-            status=RouteStatus.ACTIVE,
-            bus_stops=["Surulere", "Yaba"]
+            driver_id=drivers[2].id, vehicle_id=vehicles[2].id,
+            start_location="Port Harcourt", end_location="Trans-Amadi",
+            departure_date=tomorrow, departure_time="08:00",
+            price_per_seat=TEST_PRICE, available_seats=4, total_seats=4,
+            status=RouteStatus.ACTIVE, bus_stops=["Port Harcourt", "Trans-Amadi"]
+        ),
+        Route(
+            driver_id=drivers[2].id, vehicle_id=vehicles[2].id,
+            start_location="Rumuola", end_location="Eleme",
+            departure_date=tomorrow, departure_time="09:30",
+            price_per_seat=TEST_PRICE, available_seats=3, total_seats=4,
+            status=RouteStatus.ACTIVE, bus_stops=["Rumuola", "Eleme"]
         ),
         
-        # Route 4: Cross-town route
+        # ========== MAJOR CITIES COVERAGE ==========
+        # Kano routes
         Route(
-            driver_id=drivers[1].id,
-            vehicle_id=vehicles[1].id,
-            start_location="Ogba",
-            end_location="Lekki",
-            departure_date=tomorrow,
-            departure_time="10:00",
-            price_per_seat=2000.00,
-            available_seats=4,
-            total_seats=4,
-            status=RouteStatus.ACTIVE,
-            bus_stops=["Ogba", "Ikeja", "Obalende", "Ikoyi", "Lekki"]
+            driver_id=drivers[0].id, vehicle_id=vehicles[0].id,
+            start_location="Kano", end_location="Sabon Gari",
+            departure_date=tomorrow, departure_time="11:00",
+            price_per_seat=TEST_PRICE, available_seats=12, total_seats=14,
+            status=RouteStatus.ACTIVE, bus_stops=["Kano", "Sabon Gari"]
         ),
         
-        # Route 5: Evening route
+        # Ibadan routes
         Route(
-            driver_id=drivers[2].id,
-            vehicle_id=vehicles[2].id,
-            start_location="VI",
-            end_location="Ikeja",
-            departure_date=tomorrow,
-            departure_time="17:00",
-            price_per_seat=1800.00,
-            available_seats=4,
-            total_seats=4,
-            status=RouteStatus.ACTIVE,
-            bus_stops=["VI", "Obalende", "Oshodi", "Ikeja"]
+            driver_id=drivers[1].id, vehicle_id=vehicles[1].id,
+            start_location="Ibadan", end_location="Bodija",
+            departure_date=tomorrow, departure_time="12:00",
+            price_per_seat=TEST_PRICE, available_seats=4, total_seats=4,
+            status=RouteStatus.ACTIVE, bus_stops=["Ibadan", "Bodija"]
         ),
         
-        # Route 6: Festac to Island
+        # Benin routes
         Route(
-            driver_id=drivers[2].id,
-            vehicle_id=vehicles[2].id,
-            start_location="Festac",
-            end_location="Ikoyi",
-            departure_date=tomorrow,
-            departure_time="08:30",
-            price_per_seat=1600.00,
-            available_seats=3,
-            total_seats=4,
-            status=RouteStatus.ACTIVE,
-            bus_stops=["Festac", "Oshodi", "Obalende", "Ikoyi"]
+            driver_id=drivers[2].id, vehicle_id=vehicles[2].id,
+            start_location="Benin City", end_location="Ikpoba Hill",
+            departure_date=tomorrow, departure_time="13:00",
+            price_per_seat=TEST_PRICE, available_seats=3, total_seats=4,
+            status=RouteStatus.ACTIVE, bus_stops=["Benin City", "Ikpoba Hill"]
+        ),
+        
+        # Kaduna routes
+        Route(
+            driver_id=drivers[0].id, vehicle_id=vehicles[0].id,
+            start_location="Kaduna", end_location="Barnawa",
+            departure_date=tomorrow, departure_time="14:00",
+            price_per_seat=TEST_PRICE, available_seats=10, total_seats=14,
+            status=RouteStatus.ACTIVE, bus_stops=["Kaduna", "Barnawa"]
+        ),
+        
+        # Enugu routes
+        Route(
+            driver_id=drivers[1].id, vehicle_id=vehicles[1].id,
+            start_location="Enugu", end_location="New Haven",
+            departure_date=tomorrow, departure_time="15:00",
+            price_per_seat=TEST_PRICE, available_seats=4, total_seats=4,
+            status=RouteStatus.ACTIVE, bus_stops=["Enugu", "New Haven"]
         ),
     ]
     
     db.add_all(routes)
     db.commit()
     
-    print(f"✅ Created {len(routes)} active routes")
-    print("\n   Available routes for testing:")
-    for i, route in enumerate(routes, 1):
-        print(f"   {i}. {route.start_location} → {route.end_location} at {route.departure_time} (₦{route.price_per_seat})")
+    print(f"✅ Created {len(routes)} active routes (All at ₦{TEST_PRICE} for Interswitch test)")
+    print("\n   Available routes covering major cities:")
+    cities_covered = set()
+    for route in routes:
+        cities_covered.add(route.start_location)
+        cities_covered.add(route.end_location)
+    print(f"   📍 {len(cities_covered)} locations covered: {', '.join(sorted(list(cities_covered))[:10])}...")
     
     return routes
 
@@ -298,13 +331,15 @@ def main():
         
         print("\n4. Test Interswitch Payment:")
         print("   Card: 5060990580000217499")
-        print("   CVV: 123")
-        print("   PIN: 1234")
+        print("   Expiry: 03/50")
+        print("   CVV: 111")
+        print("   PIN: 1111")
+        print("   Amount: ₦566.00 (Standard Interswitch test amount)")
         
-        print("\n5. Test Locations:")
-        print("   Search: Ikeja → VI")
-        print("   Or: Ogba → Lekki")
-        print("   Or: Festac → Ikoyi")
+        print("\n5. Test Locations (All routes available):")
+        print("   Lagos: Ikeja, Lekki, Surulere, Ajah, Victoria Island, etc.")
+        print("   Abuja: Wuse, Kubwa, Maitama, Gwarinpa, Garki")
+        print("   Other: Port Harcourt, Kano, Ibadan, Benin City, Kaduna, Enugu")
         
         print("\n📊 Database Stats:")
         print(f"   Total Users: {len(users)} ({len(riders)} riders, {len(drivers)} drivers)")

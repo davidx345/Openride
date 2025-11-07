@@ -18,7 +18,7 @@ export default function RouteCreationForm({ onSubmit, onCancel }: any) {
     passingStops: [],
     departureTime: "06:30",
     availableSeats: 1,
-    pricePerSeat: 1500,
+    pricePerSeat: 566,
   })
 
   const [fromOpen, setFromOpen] = useState(false)
