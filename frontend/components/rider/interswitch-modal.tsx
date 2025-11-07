@@ -153,81 +153,80 @@ export default function InterswitchModal({
   };
 
   return (
-    <Card className="p-6 border border-border">
+    <Card className="p-4 border border-border">
       {step === "info" && (
-        <div className="space-y-6">
+        <div className="space-y-4">
           <div>
-            <Badge className="bg-blue-500/20 text-blue-700 border-blue-500/30 mb-4">
+            <Badge className="bg-blue-500/20 text-blue-700 border-blue-500/30 mb-2 text-xs">
               {paymentParams?.mode === 'TEST' ? 'Demo Mode' : 'Live Payment'}
             </Badge>
-            <h2 className="text-2xl font-bold mb-2">Complete Payment with Interswitch</h2>
-            <p className="text-muted-foreground">
+            <h2 className="text-xl font-bold mb-1">Complete Payment</h2>
+            <p className="text-sm text-muted-foreground">
               {paymentParams?.mode === 'TEST' 
-                ? 'This is a demonstration using Interswitch TEST environment' 
+                ? 'Interswitch TEST environment' 
                 : 'Secure payment powered by Interswitch'}
             </p>
           </div>
 
           {/* Amount */}
-          <div className="p-4 bg-primary/5 rounded-lg border border-primary/20">
-            <p className="text-sm text-muted-foreground mb-1">Amount to Pay</p>
-            <p className="text-4xl font-bold text-primary">₦{amount.toLocaleString()}</p>
+          <div className="p-3 bg-primary/5 rounded-lg border border-primary/20">
+            <p className="text-xs text-muted-foreground mb-1">Amount to Pay</p>
+            <p className="text-3xl font-bold text-primary">₦{amount.toLocaleString()}</p>
           </div>
 
           {/* Test Card Info - Only show in TEST mode */}
           {paymentParams?.mode === 'TEST' && (
-            <div className="space-y-4">
-              <h3 className="font-bold text-lg flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-blue-500" />
+            <div className="space-y-2">
+              <h3 className="font-semibold text-sm flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-blue-500" />
                 Test Card Information
               </h3>
-              <div className="bg-muted/50 p-4 rounded-lg space-y-3">
-                <div className="flex items-center justify-between pb-3 border-b border-border">
+              <div className="bg-muted/50 p-3 rounded-lg space-y-2">
+                <div className="flex items-center justify-between pb-2 border-b border-border">
                   <div>
-                    <p className="text-xs text-muted-foreground mb-1">Card Number</p>
-                    <p className="font-mono text-sm font-semibold">{testCard.number}</p>
+                    <p className="text-xs text-muted-foreground mb-0.5">Card Number</p>
+                    <p className="font-mono text-xs font-semibold">{testCard.number}</p>
                   </div>
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => copyToClipboard(testCard.number.replace(/\s/g, ""))}
-                    className="gap-2"
+                    className="gap-1 h-7 px-2"
                   >
-                    <Copy className="w-4 h-4" />
-                    {copied ? "Copied!" : "Copy"}
+                    <Copy className="w-3 h-3" />
+                    <span className="text-xs">{copied ? "Copied!" : "Copy"}</span>
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <p className="text-xs text-muted-foreground mb-1">Expiry Date</p>
-                    <p className="font-mono text-sm font-semibold">{testCard.expiry}</p>
+                    <p className="text-xs text-muted-foreground mb-0.5">Expiry</p>
+                    <p className="font-mono text-xs font-semibold">{testCard.expiry}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground mb-1">CVV</p>
-                    <p className="font-mono text-sm font-semibold">{testCard.cvv}</p>
+                    <p className="text-xs text-muted-foreground mb-0.5">CVV</p>
+                    <p className="font-mono text-xs font-semibold">{testCard.cvv}</p>
                   </div>
-                </div>
-
-                <div>
-                  <p className="text-xs text-muted-foreground mb-1">PIN</p>
-                  <p className="font-mono text-sm font-semibold">{testCard.pin}</p>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-0.5">PIN</p>
+                    <p className="font-mono text-xs font-semibold">{testCard.pin}</p>
+                  </div>
                 </div>
               </div>
             </div>
           )}
 
           {/* Security Note */}
-          <div className="p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-            <p className="text-sm text-green-700">
-              ✓ Secure connection. Your payment is protected by Interswitch encryption.
+          <div className="p-2 bg-green-500/10 border border-green-500/30 rounded-lg">
+            <p className="text-xs text-green-700">
+              ✓ Secure connection. Protected by Interswitch encryption.
             </p>
           </div>
 
           {/* Transaction Reference */}
           {paymentParams && (
             <div className="text-xs text-muted-foreground">
-              <p>Transaction Ref: {paymentParams.txn_ref}</p>
+              <p>Ref: {paymentParams.txn_ref}</p>
             </div>
           )}
 
