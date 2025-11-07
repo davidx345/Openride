@@ -147,7 +147,7 @@ export default function EnhancedSearchResults({ results, onBook }: any) {
         <BookingModal
           route={selectedRoute}
           onClose={() => setShowBookingModal(false)}
-          onConfirm={(seats) => {
+          onConfirm={(seats: number) => {
             onBook(selectedRoute.id, seats)
             setShowBookingModal(false)
           }}

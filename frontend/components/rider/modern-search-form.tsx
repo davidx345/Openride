@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { MapPin, Clock, Search, Star, History, Home, Briefcase, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { NIGERIAN_CITIES } from "@/src/types"
 
 interface SavedPlace {
   id: string
@@ -21,12 +22,27 @@ export default function ModernSearchForm({ onSearch }: ModernSearchFormProps) {
   const [from, setFrom] = useState("")
   const [to, setTo] = useState("")
   const [timeRange, setTimeRange] = useState("6:00 - 8:00 AM")
-  const [activeInput, setActiveInput] = useState<"from" | "to" | null>(null)
+  const [fromSearch, setFromSearch] = useState("")
+  const [toSearch, setToSearch] = useState("")
+  const [fromOpen, setFromOpen] = useState(false)
+  const [toOpen, setToOpen] = useState(false)
   const [recentSearches, setRecentSearches] = useState<Array<{ from: string; to: string }>>([])
+  
+  const fromRef = useRef<HTMLDivElement>(null)
+  const toRef = useRef<HTMLDivElement>(null)
+
   const [savedPlaces] = useState<SavedPlace[]>([
-    { id: "1", name: "Home", address: "Lekki Phase 1, Lagos", type: "home" },
-    { id: "2", name: "Work", address: "Victoria Island, Lagos", type: "work" },
+    { id: "1", name: "Home", address: "Lekki Phase 1", type: "home" },
+    { id: "2", name: "Work", address: "Victoria Island", type: "work" },
   ])
+
+  // Filter cities based on search input
+  const filteredFromCities = NIGERIAN_CITIES.filter((city) =>
+    city.toLowerCase().includes(fromSearch.toLowerCase())
+  )
+  const filteredToCities = NIGERIAN_CITIES.filter((city) =>
+    city.toLowerCase().includes(toSearch.toLowerCase())
+  )
 
   // Load recent searches from localStorage
   useEffect(() => {
@@ -34,6 +50,21 @@ export default function ModernSearchForm({ onSearch }: ModernSearchFormProps) {
     if (saved) {
       setRecentSearches(JSON.parse(saved))
     }
+  }, [])
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (fromRef.current && !fromRef.current.contains(event.target as Node)) {
+        setFromOpen(false)
+      }
+      if (toRef.current && !toRef.current.contains(event.target as Node)) {
+        setToOpen(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
   const handleSearch = () => {
@@ -46,23 +77,30 @@ export default function ModernSearchForm({ onSearch }: ModernSearchFormProps) {
       
       // Call the parent onSearch with proper parameters
       onSearch({ from, to, timeRange })
-      setActiveInput(null)
+      setFromOpen(false)
+      setToOpen(false)
     }
   }
 
   const selectPlace = (address: string, inputType: "from" | "to") => {
     if (inputType === "from") {
       setFrom(address)
+      setFromSearch("")
+      setFromOpen(false)
     } else {
       setTo(address)
+      setToSearch("")
+      setToOpen(false)
     }
-    setActiveInput(null)
   }
 
   const selectRecent = (search: { from: string; to: string }) => {
     setFrom(search.from)
     setTo(search.to)
-    setActiveInput(null)
+    setFromSearch("")
+    setToSearch("")
+    setFromOpen(false)
+    setToOpen(false)
   }
 
   const swapLocations = () => {
@@ -92,24 +130,58 @@ export default function ModernSearchForm({ onSearch }: ModernSearchFormProps) {
 
         <div className="p-6 space-y-4">
           {/* From Input */}
-          <div className="relative">
+          <div className="relative" ref={fromRef}>
             <div className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
               <div className="w-3 h-3 rounded-full bg-primary border-2 border-white shadow-md" />
             </div>
             <Input
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-              onFocus={() => setActiveInput("from")}
+              value={from || fromSearch}
+              onChange={(e) => {
+                setFromSearch(e.target.value)
+                setFrom("")
+                setFromOpen(true)
+              }}
+              onFocus={() => setFromOpen(true)}
               placeholder="Pickup location"
               className="pl-10 h-14 text-base border-2 focus:border-primary transition-all"
             />
-            {from && activeInput === "from" && (
+            {from && (
               <button
-                onClick={() => setFrom("")}
+                onClick={() => {
+                  setFrom("")
+                  setFromSearch("")
+                }}
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-full"
               >
                 <X className="w-4 h-4" />
               </button>
+            )}
+            
+            {/* From Dropdown */}
+            {fromOpen && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-card border-2 border-primary rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                {filteredFromCities.length > 0 ? (
+                  filteredFromCities.map((city) => (
+                    <button
+                      key={city}
+                      type="button"
+                      onClick={() => {
+                        setFrom(city)
+                        setFromSearch("")
+                        setFromOpen(false)
+                      }}
+                      className="w-full px-4 py-3 hover:bg-primary/10 text-left transition-colors text-sm flex items-center gap-3"
+                    >
+                      <MapPin className="w-4 h-4 text-primary" />
+                      <span className="font-medium">{city}</span>
+                    </button>
+                  ))
+                ) : (
+                  <div className="px-4 py-3 text-sm text-muted-foreground">
+                    No locations found
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
@@ -127,24 +199,58 @@ export default function ModernSearchForm({ onSearch }: ModernSearchFormProps) {
           </div>
 
           {/* To Input */}
-          <div className="relative">
+          <div className="relative" ref={toRef}>
             <div className="absolute left-4 top-1/2 -translate-y-1/2 z-10">
               <MapPin className="w-5 h-5 text-accent" />
             </div>
             <Input
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              onFocus={() => setActiveInput("to")}
+              value={to || toSearch}
+              onChange={(e) => {
+                setToSearch(e.target.value)
+                setTo("")
+                setToOpen(true)
+              }}
+              onFocus={() => setToOpen(true)}
               placeholder="Dropoff location"
               className="pl-10 h-14 text-base border-2 focus:border-primary transition-all"
             />
-            {to && activeInput === "to" && (
+            {to && (
               <button
-                onClick={() => setTo("")}
+                onClick={() => {
+                  setTo("")
+                  setToSearch("")
+                }}
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-full"
               >
                 <X className="w-4 h-4" />
               </button>
+            )}
+            
+            {/* To Dropdown */}
+            {toOpen && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-card border-2 border-primary rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto">
+                {filteredToCities.length > 0 ? (
+                  filteredToCities.map((city) => (
+                    <button
+                      key={city}
+                      type="button"
+                      onClick={() => {
+                        setTo(city)
+                        setToSearch("")
+                        setToOpen(false)
+                      }}
+                      className="w-full px-4 py-3 hover:bg-primary/10 text-left transition-colors text-sm flex items-center gap-3"
+                    >
+                      <MapPin className="w-4 h-4 text-primary" />
+                      <span className="font-medium">{city}</span>
+                    </button>
+                  ))
+                ) : (
+                  <div className="px-4 py-3 text-sm text-muted-foreground">
+                    No locations found
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
@@ -183,64 +289,30 @@ export default function ModernSearchForm({ onSearch }: ModernSearchFormProps) {
         </div>
       </Card>
 
-      {/* Suggestions Panel - Shows when input is focused */}
-      {activeInput && (
-        <Card className="border-2 border-primary/20 shadow-lg animate-fade-in-up">
+      {/* Recent Searches Panel - Shows below main card */}
+      {recentSearches.length > 0 && !fromOpen && !toOpen && (
+        <Card className="border-2 border-border/50 shadow-sm">
           <div className="p-4">
-            {/* Saved Places */}
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
-                <Star className="w-4 h-4" />
-                Saved Places
-              </h3>
-              <div className="space-y-2">
-                {savedPlaces.map((place) => (
-                  <button
-                    key={place.id}
-                    onClick={() => selectPlace(place.address, activeInput)}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors text-left"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      {place.type === "home" ? (
-                        <Home className="w-5 h-5 text-primary" />
-                      ) : (
-                        <Briefcase className="w-5 h-5 text-primary" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-sm">{place.name}</p>
-                      <p className="text-xs text-muted-foreground">{place.address}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
+            <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
+              <History className="w-4 h-4" />
+              Recent Searches
+            </h3>
+            <div className="space-y-2">
+              {recentSearches.map((search, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => selectRecent(search)}
+                  className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors text-left"
+                >
+                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{search.from} → {search.to}</p>
+                  </div>
+                </button>
+              ))}
             </div>
-
-            {/* Recent Searches */}
-            {recentSearches.length > 0 && (
-              <div>
-                <h3 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
-                  <History className="w-4 h-4" />
-                  Recent Searches
-                </h3>
-                <div className="space-y-2">
-                  {recentSearches.map((search, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => selectRecent(search)}
-                      className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted transition-colors text-left"
-                    >
-                      <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                        <Clock className="w-5 h-5 text-muted-foreground" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium">{search.from} → {search.to}</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </Card>
       )}
