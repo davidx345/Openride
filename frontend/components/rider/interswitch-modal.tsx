@@ -87,10 +87,14 @@ export default function InterswitchModal({
 
     // Payment callback function
     const paymentCallback = (response: any) => {
-      console.log('Interswitch Payment Response:', response);
+      console.log('🔔 Interswitch Payment Callback Triggered');
+      console.log('📦 Full Response Object:', response);
+      console.log('✅ Response Code:', response.resp);
+      console.log('📝 Response Description:', response.desc);
 
-      // Check response code
+      // Check response code - '00' means success
       if (response.resp === '00') {
+        console.log('✅ Payment Successful!');
         // Payment successful
         setStep("success");
         
@@ -98,8 +102,17 @@ export default function InterswitchModal({
         setTimeout(() => {
           onSuccess(paymentParams.txn_ref);
         }, 2000);
+      } else if (response.resp === 'Z01') {
+        // User cancelled payment
+        console.log('❌ Payment Cancelled by User');
+        setStep("error");
+        setErrorMessage('Payment was cancelled');
+        if (onError) {
+          onError('Payment cancelled');
+        }
       } else {
-        // Payment failed or cancelled
+        // Payment failed or other error
+        console.log('❌ Payment Failed:', response.desc);
         setStep("error");
         setErrorMessage(
           response.desc || 
