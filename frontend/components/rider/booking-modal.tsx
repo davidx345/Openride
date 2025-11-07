@@ -4,9 +4,84 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { X, Minus, Plus } from "lucide-react"
+import InterswitchModal from "./interswitch-modal"
+import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
 
 export default function BookingModal({ route, onClose, onConfirm }: any) {
+  const router = useRouter()
   const [seats, setSeats] = useState(1)
+  const [showPayment, setShowPayment] = useState(false)
+  const [paymentParams, setPaymentParams] = useState<any>(null)
+
+  const totalAmount = route.pricePerSeat * seats
+
+  const handleProceedToPayment = () => {
+    // DEMO MODE: Skip payment gateway for instant booking
+    // Uncomment below to use Interswitch payment
+    
+    // For demo: instant confirmation
+    toast.success("Payment successful! Booking confirmed!")
+    const txnRef = `OPENRIDE-${Date.now()}`
+    setTimeout(() => {
+      router.push(`/booking/confirmation?id=${txnRef}`)
+      onConfirm(seats)
+      onClose()
+    }, 1000)
+    
+    /* 
+    // Uncomment this section to enable Interswitch payment gateway:
+    const txnRef = `OPENRIDE-${Date.now()}`
+    const params = {
+      merchant_code: "MX123456",
+      pay_item_id: "Default_Payable_MX123456",
+      txn_ref: txnRef,
+      amount: totalAmount * 100, // Convert to kobo
+      currency: 566, // NGN
+      cust_name: "Demo User",
+      cust_email: "user@demo.com",
+      mode: "TEST",
+      site_redirect_url: window.location.origin + "/booking/confirmation?id=" + txnRef,
+    }
+    
+    setPaymentParams(params)
+    setShowPayment(true)
+    */
+  }
+
+  const handlePaymentSuccess = (transactionRef: string) => {
+    // Demo mode: Just redirect to confirmation
+    toast.success("Payment successful! Redirecting...")
+    setTimeout(() => {
+      router.push(`/booking/confirmation?id=${transactionRef}`)
+      onConfirm(seats)
+      onClose()
+    }, 1000)
+  }
+
+  const handlePaymentError = (error: string) => {
+    toast.error(error || "Payment failed. Please try again.")
+    setShowPayment(false)
+  }
+
+  if (showPayment) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="w-full max-w-md">
+          <InterswitchModal
+            amount={totalAmount}
+            bookingId={`BK-${Date.now()}`}
+            paymentParams={paymentParams}
+            onClose={() => {
+              setShowPayment(false)
+            }}
+            onSuccess={handlePaymentSuccess}
+            onError={handlePaymentError}
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -70,7 +145,7 @@ export default function BookingModal({ route, onClose, onConfirm }: any) {
             <Button variant="outline" onClick={onClose} className="flex-1 bg-transparent">
               Cancel
             </Button>
-            <Button className="bg-primary hover:bg-primary/90 flex-1" onClick={() => onConfirm(seats)}>
+            <Button className="bg-primary hover:bg-primary/90 flex-1" onClick={handleProceedToPayment}>
               Proceed to Payment
             </Button>
           </div>
