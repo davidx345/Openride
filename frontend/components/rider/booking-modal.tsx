@@ -17,20 +17,7 @@ export default function BookingModal({ route, onClose, onConfirm }: any) {
   const totalAmount = route.pricePerSeat * seats
 
   const handleProceedToPayment = () => {
-    // DEMO MODE: Skip payment gateway for instant booking
-    // Uncomment below to use Interswitch payment
-    
-    // For demo: instant confirmation
-    toast.success("Payment successful! Booking confirmed!")
-    const txnRef = `OPENRIDE-${Date.now()}`
-    setTimeout(() => {
-      router.push(`/booking/confirmation?id=${txnRef}`)
-      onConfirm(seats)
-      onClose()
-    }, 1000)
-    
-    /* 
-    // Uncomment this section to enable Interswitch payment gateway:
+    // Generate demo payment params for Interswitch
     const txnRef = `OPENRIDE-${Date.now()}`
     const params = {
       merchant_code: "MX123456",
@@ -46,7 +33,6 @@ export default function BookingModal({ route, onClose, onConfirm }: any) {
     
     setPaymentParams(params)
     setShowPayment(true)
-    */
   }
 
   const handlePaymentSuccess = (transactionRef: string) => {
