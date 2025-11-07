@@ -112,25 +112,31 @@ export default function InterswitchModal({
       }
     };
 
-    // Prepare Interswitch payment request
+    // Prepare Interswitch payment request - exact format from docs
     const interswitchRequest = {
       merchant_code: paymentParams.merchant_code,
       pay_item_id: paymentParams.pay_item_id,
       txn_ref: paymentParams.txn_ref,
-      amount: paymentParams.amount, // Amount in kobo
+      amount: paymentParams.amount, // Amount in kobo (minor units)
       currency: paymentParams.currency, // 566 for NGN
+      cust_id: paymentParams.cust_email || 'rider@openride.demo',
+      cust_name: paymentParams.cust_name || 'Demo Rider',
+      cust_email: paymentParams.cust_email || 'rider@openride.demo',
       site_redirect_url: paymentParams.site_redirect_url || window.location.origin,
-      cust_name: paymentParams.cust_name,
-      cust_email: paymentParams.cust_email,
       mode: paymentParams.mode, // TEST or LIVE
-      onComplete: paymentCallback
+      onComplete: paymentCallback,
+      callback: paymentCallback // Some versions use 'callback' instead of 'onComplete'
     };
 
     console.log('Initiating Interswitch payment:', interswitchRequest);
 
     // Call Interswitch inline checkout
     try {
-      window.webpayCheckout(interswitchRequest);
+      if (typeof window.webpayCheckout === 'function') {
+        window.webpayCheckout(interswitchRequest);
+      } else {
+        throw new Error('Interswitch widget not loaded');
+      }
     } catch (error) {
       console.error('Error initiating payment:', error);
       setStep("error");

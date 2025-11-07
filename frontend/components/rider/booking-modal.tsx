@@ -24,8 +24,8 @@ export default function BookingModal({ route, onClose, onConfirm }: any) {
     // Generate demo payment params for Interswitch
     const txnRef = `OPENRIDE-${Date.now()}`
     const params = {
-      merchant_code: "MX007", // From Interswitch inline checkout example
-      pay_item_id: "101007", // From Interswitch inline checkout example
+      merchant_code: "MX26070", // Correct test merchant code
+      pay_item_id: "Default_Payable_MX26070", // Correct test pay item
       txn_ref: txnRef,
       amount: totalAmount * 100, // Convert to kobo (minor units)
       currency: 566, // NGN ISO code
