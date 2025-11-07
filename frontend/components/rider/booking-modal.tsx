@@ -17,18 +17,23 @@ export default function BookingModal({ route, onClose, onConfirm }: any) {
   const totalAmount = route.pricePerSeat * seats
 
   const handleProceedToPayment = () => {
+    // Get user info from localStorage (demo mode)
+    const userStr = localStorage.getItem('demo_user')
+    const user = userStr ? JSON.parse(userStr) : null
+    
     // Generate demo payment params for Interswitch
     const txnRef = `OPENRIDE-${Date.now()}`
     const params = {
-      merchant_code: "MX123456",
-      pay_item_id: "Default_Payable_MX123456",
+      merchant_code: "MX26070", // Test merchant code from Interswitch docs
+      pay_item_id: "Default_Payable_MX26070", 
       txn_ref: txnRef,
-      amount: totalAmount * 100, // Convert to kobo
-      currency: 566, // NGN
-      cust_name: "Demo User",
-      cust_email: "user@demo.com",
-      mode: "TEST",
-      site_redirect_url: window.location.origin + "/booking/confirmation?id=" + txnRef,
+      amount: totalAmount * 100, // Convert to kobo (minor units)
+      currency: 566, // NGN ISO code
+      cust_name: user?.name || "Demo Rider",
+      cust_email: user?.email || "rider@openride.demo",
+      pay_item_name: `OpenRide: ${route.from} to ${route.to}`,
+      mode: "TEST", // TEST mode for demo
+      site_redirect_url: window.location.origin + "/rider?payment=success",
     }
     
     setPaymentParams(params)

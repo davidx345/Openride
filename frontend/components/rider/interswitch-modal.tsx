@@ -55,26 +55,20 @@ export default function InterswitchModal({
     pin: "1234",
   }
 
-  // Load Interswitch inline checkout script
+  // Check if Interswitch script is loaded (loaded via layout.tsx)
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://newwebpay.qa.interswitchng.com/inline-checkout.js';
-    script.async = true;
-    script.onload = () => {
-      console.log('✅ Interswitch script loaded');
-      setScriptLoaded(true);
+    // Check if webpayCheckout is available
+    const checkScript = () => {
+      if (typeof window !== 'undefined' && window.webpayCheckout) {
+        console.log('✅ Interswitch script loaded');
+        setScriptLoaded(true);
+      } else {
+        // Retry after a short delay
+        setTimeout(checkScript, 100);
+      }
     };
-    script.onerror = () => {
-      console.error('❌ Failed to load Interswitch script');
-      setErrorMessage('Failed to load payment gateway. Please try again.');
-      setStep('error');
-    };
-    document.body.appendChild(script);
-
-    return () => {
-      // Cleanup script on unmount
-      document.body.removeChild(script);
-    };
+    
+    checkScript();
   }, []);
 
   const handlePayment = () => {

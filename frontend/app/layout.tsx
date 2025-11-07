@@ -39,6 +39,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Interswitch Inline Checkout Script (TEST Mode) */}
+        <script src="https://newwebpay.qa.interswitchng.com/inline-checkout.js" async></script>
+      </head>
       <body className={`font-sans antialiased`}>
         <ErrorBoundary>
           {children}
