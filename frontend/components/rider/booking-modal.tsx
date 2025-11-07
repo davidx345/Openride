@@ -21,11 +21,11 @@ export default function BookingModal({ route, onClose, onConfirm }: any) {
     const userStr = localStorage.getItem('demo_user')
     const user = userStr ? JSON.parse(userStr) : null
     
-    // Generate demo payment params for Interswitch - Use INLINE CHECKOUT example credentials
+    // Generate demo payment params for Interswitch - Use QA test credentials
     const txnRef = `OPENRIDE-${Date.now()}`
     const params = {
-      merchant_code: "MX007", // From inline checkout example in docs
-      pay_item_id: "101007", // From inline checkout example in docs
+      merchant_code: "MX6072", // Official Interswitch QA test merchant code
+      pay_item_id: "9405967", // Official Interswitch QA test pay item id
       txn_ref: txnRef,
       amount: totalAmount * 100, // Convert to kobo (minor units) - send as NUMBER
       currency: 566, // NGN ISO code - send as NUMBER
