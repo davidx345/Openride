@@ -21,14 +21,14 @@ export default function BookingModal({ route, onClose, onConfirm }: any) {
     const userStr = localStorage.getItem('demo_user')
     const user = userStr ? JSON.parse(userStr) : null
     
-    // Generate demo payment params for Interswitch - Using Card Payment API credentials
+    // Generate demo payment params for Interswitch - Use INLINE CHECKOUT example credentials
     const txnRef = `OPENRIDE-${Date.now()}`
     const params = {
-      merchant_code: "MX21696", // Card Payment API test credentials
-      pay_item_id: "4177785", // Card Payment API test credentials
+      merchant_code: "MX007", // From inline checkout example in docs
+      pay_item_id: "101007", // From inline checkout example in docs
       txn_ref: txnRef,
-      amount: totalAmount * 100, // Convert to kobo (minor units)
-      currency: 566, // NGN ISO code
+      amount: totalAmount * 100, // Convert to kobo (minor units) - send as NUMBER
+      currency: 566, // NGN ISO code - send as NUMBER
       cust_name: user?.name || "Demo Rider",
       cust_email: user?.email || "rider@openride.demo",
       pay_item_name: `OpenRide: ${route.from} to ${route.to}`,

@@ -133,21 +133,16 @@ export default function InterswitchModal({
       }
     };
 
-    // Prepare Interswitch payment request - exact format from docs
+    // Prepare Interswitch payment request - EXACT format from inline checkout docs
     const interswitchRequest = {
       merchant_code: paymentParams.merchant_code,
       pay_item_id: paymentParams.pay_item_id,
-      pay_item_name: paymentParams.pay_item_name || 'OpenRide Seat Booking',
       txn_ref: paymentParams.txn_ref,
-      amount: String(paymentParams.amount), // Amount in kobo (minor units) as string per docs
-      currency: String(paymentParams.currency), // 566 for NGN
-      cust_id: paymentParams.cust_email || 'rider@openride.demo',
-      cust_name: paymentParams.cust_name || 'Demo Rider',
-      cust_email: paymentParams.cust_email || 'rider@openride.demo',
+      amount: paymentParams.amount, // NUMBER (not string) as per sample code
+      currency: paymentParams.currency, // NUMBER 566 for NGN
       site_redirect_url: paymentParams.site_redirect_url || window.location.origin,
-      mode: paymentParams.mode, // TEST or LIVE
-      onComplete: paymentCallback,
-      callback: paymentCallback // Some versions use 'callback' instead of 'onComplete'
+      mode: paymentParams.mode, // 'TEST' or 'LIVE'
+      onComplete: paymentCallback
     };
 
     console.log('Initiating Interswitch payment:', interswitchRequest);
@@ -186,7 +181,7 @@ export default function InterswitchModal({
         <div className="space-y-4">
           <div>
             <Badge className="bg-blue-500/20 text-blue-700 border-blue-500/30 mb-2 text-xs">
-              {paymentParams?.mode === 'TEST' ? 'Demo Mode' : 'Live Payment'}
+              {paymentParams?.mode === 'TEST' ? 'Test Mode' : 'Live Payment'}
             </Badge>
             <h2 className="text-xl font-bold mb-1">Complete Payment</h2>
             <p className="text-sm text-muted-foreground">
