@@ -137,9 +137,10 @@ export default function InterswitchModal({
     const interswitchRequest = {
       merchant_code: paymentParams.merchant_code,
       pay_item_id: paymentParams.pay_item_id,
+      pay_item_name: paymentParams.pay_item_name || 'OpenRide Seat Booking',
       txn_ref: paymentParams.txn_ref,
-      amount: paymentParams.amount, // Amount in kobo (minor units)
-      currency: paymentParams.currency, // 566 for NGN
+      amount: String(paymentParams.amount), // Amount in kobo (minor units) as string per docs
+      currency: String(paymentParams.currency), // 566 for NGN
       cust_id: paymentParams.cust_email || 'rider@openride.demo',
       cust_name: paymentParams.cust_name || 'Demo Rider',
       cust_email: paymentParams.cust_email || 'rider@openride.demo',
