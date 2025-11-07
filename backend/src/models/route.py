@@ -1,5 +1,5 @@
 """
-Route model for OpenSeat platform
+Route model for OpenRide platform
 """
 from sqlalchemy import Column, String, Integer, Float, DateTime, ForeignKey, Enum as SQLEnum, JSON
 from sqlalchemy.orm import relationship

@@ -1,5 +1,5 @@
 """
-User model for OpenSeat platform
+User model for OpenRide platform
 """
 from sqlalchemy import Column, String, DateTime, Enum as SQLEnum
 from sqlalchemy.orm import relationship
