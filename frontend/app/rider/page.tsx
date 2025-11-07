@@ -3,9 +3,9 @@
 import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import RiderSidebar from "@/components/rider/rider-sidebar"
-import SearchForm from "@/components/rider/search-form"
+import ModernSearchForm from "@/components/rider/modern-search-form"
 import SearchResults from "@/components/rider/search-results"
-import MyBookings from "@/components/rider/my-bookings"
+import ModernBookings from "@/components/rider/modern-bookings"
 import { MapPin, Search } from "lucide-react"
 
 // Sample routes data
@@ -164,13 +164,13 @@ export default function RiderDashboard() {
 
               {/* Search Tab */}
               <TabsContent value="search" className="space-y-6">
-                <SearchForm onSearch={handleSearch} />
+                <ModernSearchForm onSearch={handleSearch} />
                 {hasSearched && <SearchResults results={searchResults} onBook={handleBooking} />}
               </TabsContent>
 
               {/* Bookings Tab */}
               <TabsContent value="bookings" className="space-y-6">
-                <MyBookings bookings={bookings} />
+                <ModernBookings />
               </TabsContent>
             </Tabs>
           </div>

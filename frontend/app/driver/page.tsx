@@ -6,13 +6,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import DriverSidebar from "@/components/driver/driver-sidebar"
 import RouteCreationForm from "@/components/driver/route-creation-form"
 import ActiveRoutesList from "@/components/driver/active-routes-list"
-import EarningsDashboard from "@/components/driver/earnings-dashboard"
-import DriverProfile from "@/components/driver/driver-profile"
+import ModernDriverDashboard from "@/components/driver/modern-driver-dashboard"
+import DriverProfileEdit from "@/components/driver/driver-profile-edit"
+import BankDetailsManagement from "@/components/driver/bank-details-management"
 import PriceCalculator from "@/components/driver/price-calculator"
-import { Plus } from "lucide-react"
+import { Plus, LayoutDashboard, Route, Settings, Wallet } from "lucide-react"
 
 export default function DriverDashboard() {
-  const [activeTab, setActiveTab] = useState("routes")
+  const [activeTab, setActiveTab] = useState("dashboard")
   const [showNewRouteForm, setShowNewRouteForm] = useState(false)
   const [routes, setRoutes] = useState([
     {
@@ -65,11 +66,29 @@ export default function DriverDashboard() {
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid w-full md:w-fit grid-cols-3">
-                <TabsTrigger value="routes">Routes</TabsTrigger>
-                <TabsTrigger value="earnings">Earnings</TabsTrigger>
-                <TabsTrigger value="profile">Profile</TabsTrigger>
+              <TabsList className="grid w-full md:w-fit grid-cols-4">
+                <TabsTrigger value="dashboard">
+                  <LayoutDashboard className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Dashboard</span>
+                </TabsTrigger>
+                <TabsTrigger value="routes">
+                  <Route className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Routes</span>
+                </TabsTrigger>
+                <TabsTrigger value="profile">
+                  <Settings className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Profile</span>
+                </TabsTrigger>
+                <TabsTrigger value="bank">
+                  <Wallet className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Bank</span>
+                </TabsTrigger>
               </TabsList>
+
+              {/* Dashboard Tab */}
+              <TabsContent value="dashboard" className="space-y-6">
+                <ModernDriverDashboard />
+              </TabsContent>
 
               {/* Routes Tab */}
               <TabsContent value="routes" className="space-y-6">
@@ -91,21 +110,14 @@ export default function DriverDashboard() {
                 <ActiveRoutesList routes={routes} onUpdateStatus={handleUpdateRouteStatus} />
               </TabsContent>
 
-              {/* Earnings Tab */}
-              <TabsContent value="earnings" className="space-y-6">
-                <div className="grid lg:grid-cols-2 gap-6">
-                  <div>
-                    <EarningsDashboard routes={routes} />
-                  </div>
-                  <div>
-                    <PriceCalculator />
-                  </div>
-                </div>
-              </TabsContent>
-
               {/* Profile Tab */}
               <TabsContent value="profile" className="space-y-6">
-                <DriverProfile />
+                <DriverProfileEdit />
+              </TabsContent>
+
+              {/* Bank Details Tab */}
+              <TabsContent value="bank" className="space-y-6">
+                <BankDetailsManagement />
               </TabsContent>
             </Tabs>
           </div>
