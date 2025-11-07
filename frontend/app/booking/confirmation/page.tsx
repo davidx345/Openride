@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -10,7 +10,7 @@ import { CheckCircle, Download, Share2, Phone, MapPin, Calendar, Clock, User, Ca
 import { QRCodeSVG } from "qrcode.react"
 import toast from "react-hot-toast"
 
-export default function BookingConfirmationPage() {
+function BookingConfirmationContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const bookingId = searchParams.get("id")
@@ -288,5 +288,17 @@ export default function BookingConfirmationPage() {
         </Card>
       </div>
     </div>
+  )
+}
+
+export default function BookingConfirmationPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="lg" text="Loading booking details..." />
+      </div>
+    }>
+      <BookingConfirmationContent />
+    </Suspense>
   )
 }
