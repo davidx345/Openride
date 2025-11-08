@@ -17,9 +17,7 @@ export default function Navbar() {
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
           onClick={() => router.push("/landing")}
         >
-          <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center animate-pulse-subtle">
-            <span className="text-white font-bold text-lg">OR</span>
-          </div>
+          <img src="/openride.png" alt="OpenRide" className="w-10 h-10 rounded-lg" />
           <span className="font-bold text-xl hidden sm:inline">OpenRide</span>
         </div>
 

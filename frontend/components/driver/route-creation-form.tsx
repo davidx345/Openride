@@ -15,7 +15,7 @@ export default function RouteCreationForm({ onSubmit, onCancel }: any) {
   const [formData, setFormData] = useState({
     from: "",
     to: "",
-    passingStops: [],
+    passingStops: [] as string[],
     departureTime: "06:30",
     availableSeats: 1,
     pricePerSeat: 566,

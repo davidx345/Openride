@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -44,6 +45,7 @@ interface Booking {
 }
 
 export default function ModernBookings() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming")
 
   // Demo bookings
@@ -260,11 +262,11 @@ export default function ModernBookings() {
                 {/* Actions */}
                 {booking.status === "upcoming" && (
                   <div className="flex gap-2 pt-2">
-                    <Button variant="outline" className="flex-1">
+                    <Button variant="outline" className="flex-1" onClick={() => router.push(`/booking/confirmation?id=${booking.id}`)}>
                       <QrCode className="w-4 h-4 mr-2" />
                       View Ticket
                     </Button>
-                    <Button className="flex-1 bg-primary">
+                    <Button className="flex-1 bg-primary" onClick={() => router.push(`/booking/confirmation?id=${booking.id}`)}>
                       <Navigation className="w-4 h-4 mr-2" />
                       Track Ride
                     </Button>
@@ -272,7 +274,7 @@ export default function ModernBookings() {
                 )}
 
                 {booking.status === "completed" && booking.blockchain && (
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full" onClick={() => router.push(`/booking/confirmation?id=${booking.id}`)}>
                     <span className="mr-2">🔗</span>
                     View Blockchain Token
                     <ChevronRight className="w-4 h-4 ml-2" />

@@ -91,26 +91,6 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Demo Credentials */}
-        <Card className="max-w-2xl mx-auto p-6 mb-16 border-primary/20 bg-primary/5">
-          <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-primary" />
-            Demo Login Credentials
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <p className="font-semibold text-sm text-muted-foreground">RIDER ACCOUNT</p>
-              <p className="font-mono text-sm">📧 rider@demo.com</p>
-              <p className="font-mono text-sm">🔑 demo123</p>
-            </div>
-            <div className="space-y-2">
-              <p className="font-semibold text-sm text-muted-foreground">DRIVER ACCOUNT</p>
-              <p className="font-mono text-sm">📧 driver@demo.com</p>
-              <p className="font-mono text-sm">🔑 demo123</p>
-            </div>
-          </div>
-        </Card>
-
         {/* Animated Stats Section */}
         <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-16 transition-all duration-1000 ${isVisible ? "opacity-100" : "opacity-0"}`}>
           {[
