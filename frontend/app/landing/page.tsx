@@ -54,9 +54,7 @@ export default function LandingPage() {
       <div className="container mx-auto px-4 py-16">
         <nav className="flex items-center justify-between mb-16">
           <div className="flex items-center gap-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">OR</span>
-            </div>
+            <img src="/openride.png" alt="OpenRide" className="w-12 h-12 rounded-lg" />
             <span className="font-bold text-2xl">OpenRide</span>
           </div>
           <div className="flex gap-3">
