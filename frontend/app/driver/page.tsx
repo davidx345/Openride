@@ -10,6 +10,7 @@ import ModernDriverDashboard from "@/components/driver/modern-driver-dashboard"
 import DriverProfileEdit from "@/components/driver/driver-profile-edit"
 import BankDetailsManagement from "@/components/driver/bank-details-management"
 import PriceCalculator from "@/components/driver/price-calculator"
+import EarningsDashboard from "@/components/driver/earnings-dashboard"
 import { Plus, LayoutDashboard, Route, Settings, Wallet } from "lucide-react"
 
 export default function DriverDashboard() {
@@ -108,6 +109,12 @@ export default function DriverDashboard() {
                 )}
 
                 <ActiveRoutesList routes={routes} onUpdateStatus={handleUpdateRouteStatus} />
+              </TabsContent>
+
+              {/* Earnings Tab */}
+              <TabsContent value="earnings" className="space-y-6">
+                <h2 className="text-2xl font-bold mb-4">Earnings Overview</h2>
+                <EarningsDashboard routes={routes} />
               </TabsContent>
 
               {/* Profile Tab */}

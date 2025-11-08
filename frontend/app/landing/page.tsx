@@ -51,8 +51,8 @@ export default function LandingPage() {
       </div>
 
       {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
-        <nav className="flex items-center justify-between mb-16">
+      <div className="container mx-auto px-4 py-8">
+        <nav className="flex items-center justify-between mb-12">
           <div className="flex items-center gap-2">
             <img src="/openride.png" alt="OpenRide" className="w-12 h-12 rounded-lg" />
             <span className="font-bold text-2xl">OpenRide</span>
@@ -67,7 +67,7 @@ export default function LandingPage() {
           </div>
         </nav>
 
-        <div className="text-center max-w-4xl mx-auto mb-16">
+        <div className="text-center max-w-4xl mx-auto mb-12">
           <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
             🚀 Live Demo - No Signup Required
           </Badge>

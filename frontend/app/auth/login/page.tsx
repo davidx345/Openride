@@ -77,9 +77,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-6">
         {/* Logo */}
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-2xl">OR</span>
-          </div>
+          <img src="/openride.png" alt="OpenRide" className="w-16 h-16 rounded-lg mx-auto mb-4" />
           <h1 className="text-3xl font-bold">Welcome Back</h1>
           <p className="text-muted-foreground mt-2">Login to continue to OpenRide</p>
         </div>
