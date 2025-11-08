@@ -54,7 +54,97 @@ function BookingConfirmationContent() {
   }, [bookingId])
 
   const handleDownloadTicket = () => {
-    toast.success("Ticket downloaded successfully!")
+    // Create a canvas to draw the ticket
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size
+    canvas.width = 800;
+    canvas.height = 1000;
+
+    // Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Header with gradient
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+    gradient.addColorStop(0, '#ff6b35');
+    gradient.addColorStop(1, '#f7931e');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, 150);
+
+    // Title
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 36px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('OpenRide Ticket', canvas.width / 2, 60);
+    ctx.font = '20px Arial';
+    ctx.fillText('Blockchain-Verified', canvas.width / 2, 95);
+
+    // Booking ID
+    ctx.fillStyle = '#333333';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText(`Booking ID: ${booking.id}`, 50, 220);
+
+    // Route Info
+    ctx.font = '20px Arial';
+    ctx.fillText(`From: ${booking.route.from}`, 50, 280);
+    ctx.fillText(`To: ${booking.route.to}`, 50, 320);
+    ctx.fillText(`Date: ${booking.bookingDate}`, 50, 360);
+    ctx.fillText(`Time: ${booking.route.departureTime}`, 50, 400);
+
+    // Driver Info
+    ctx.font = 'bold 22px Arial';
+    ctx.fillText('Driver Information', 50, 460);
+    ctx.font = '18px Arial';
+    ctx.fillText(`Name: ${booking.driver.name}`, 50, 495);
+    ctx.fillText(`Phone: ${booking.driver.phone}`, 50, 525);
+    ctx.fillText(`Vehicle: ${booking.driver.vehicle}`, 50, 555);
+
+    // Payment Info
+    ctx.font = 'bold 22px Arial';
+    ctx.fillText('Payment Details', 50, 615);
+    ctx.font = '18px Arial';
+    ctx.fillText(`Seats: ${booking.seats}`, 50, 650);
+    ctx.fillText(`Total: ₦${booking.totalAmount.toLocaleString()}`, 50, 680);
+
+    // Blockchain Info
+    ctx.font = 'bold 22px Arial';
+    ctx.fillText('Blockchain Verification', 50, 740);
+    ctx.font = '14px Arial';
+    ctx.fillText(`Token: ${booking.blockchainToken.tokenId}`, 50, 775);
+    ctx.fillText(`Hash: ${booking.blockchainToken.transactionHash.substring(0, 40)}...`, 50, 805);
+    
+    // Status badge
+    ctx.fillStyle = '#10b981';
+    ctx.fillRect(50, 850, 200, 40);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 18px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('✓ CONFIRMED', 150, 877);
+
+    // Footer
+    ctx.fillStyle = '#666666';
+    ctx.font = '14px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Show this ticket to your driver', canvas.width / 2, 950);
+
+    // Convert canvas to blob and download
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `OpenRide-Ticket-${booking.id}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast.success("Ticket downloaded successfully!");
+      }
+    });
   }
 
   const handleShareBooking = async () => {
@@ -249,14 +339,6 @@ function BookingConfirmationContent() {
                   ✓ Verified on Blockchain
                 </Badge>
               </div>
-              <Button
-                size="sm"
-                variant="outline"
-                className="w-full"
-                onClick={() => window.open(booking.blockchainToken.explorerUrl, "_blank")}
-              >
-                View on Explorer →
-              </Button>
             </div>
           </div>
         </Card>

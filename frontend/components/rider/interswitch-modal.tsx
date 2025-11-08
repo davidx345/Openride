@@ -49,9 +49,9 @@ export default function InterswitchModal({
   const [errorMessage, setErrorMessage] = useState("")
 
   const testCard = {
-    number: "5060 9905 8000 0217 499",
-    cvv: "111",
-    expiry: "03/50",
+    number: "5123 4500 0000 0008",
+    cvv: "100",
+    expiry: "01/39",
     pin: "1111",
   }
 
